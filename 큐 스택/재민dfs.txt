@@ -1,0 +1,65 @@
+import java.util.Scanner;
+import java.util.Stack;
+
+public class Main {
+	
+	static int nV; //총 vertex 수
+    static int nE; //총 edge 수
+    static int[][] adMatrix;
+	
+	public static void main(String[] args) {
+		
+		Scanner scan = new Scanner(System.in);
+		Stack<Integer> stack = new Stack<Integer>();
+		int connection=0;
+	    
+	    do {
+	    	nV = scan.nextInt();
+		    nE = scan.nextInt();
+	    } while ( !( (nV >= 1 && nV <= 1000) || nE >= 0 && nE <= nV*(nV-1)/2 ) );
+        
+        adMatrix = new int[nV+1][nV+1]; // 1부터 시작이니까 +1
+        boolean is_visited[] = new boolean[nV+1];
+        for(int i=0; i<nV+1; i++)
+        	is_visited[i] = false;
+        
+        for(int i=0;i<nE;i++) {
+            int vertex1, vertex2;
+            vertex1 = scan.nextInt();
+            vertex2 = scan.nextInt();
+            adMatrix[vertex2][vertex1] = 1;
+            adMatrix[vertex1][vertex2] = 1;
+        }
+		
+        for(int i=1; i<=nV && nV<=1000; i++) {	// 인덱스와 vertex를 맞춰주기 위해서 1부터 시작
+        	if(stack.empty() && !is_visited[i]) {
+        		connection++;
+        		stack.push(i);
+        		is_visited[i] = true;
+        	}
+        	
+        	for(int j=1; j<=nV; j++) {
+        		if(adMatrix[i][j] == 1 && !is_visited[j]) { // 요소가 1이면서 방문되지 않았다면
+        			stack.push(j);
+        			is_visited[j] = true;
+        		}
+        	}
+        	
+        	while(!stack.empty()) {
+        		int temp_pop=0;
+        		
+        		if(!stack.empty())
+        			temp_pop = stack.pop();
+        		
+        		for(int k=1; k<=nV; k++) {
+        			if(adMatrix[temp_pop][k] == 1 && !is_visited[k]) { // 요소가 1이면서 방문되지 않았다면
+            			stack.push(k);
+            			is_visited[k] = true;
+            		}
+        		}
+        	}
+        }
+        
+        System.out.println(connection);
+	}
+}
